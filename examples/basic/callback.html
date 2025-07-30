@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <title>Logged in</title>
+</head>
+<body>
+  <h1>Logged in</h1>
+  <div id="info"></div>
+  <script>
+    var hash = window.location.hash.slice(1);
+    var params = new URLSearchParams(hash);
+    var idToken = params.get('id_token');
+    var el = document.getElementById('info');
+    if (idToken) {
+      var payload = JSON.parse(atob(idToken.split('.')[1]));
+      var sub = payload.sub || '';
+      var email = payload.email || '';
+      var groups = payload['cognito:groups'] || [];
+      var html = '<p><strong>User</strong></p><ul>';
+      html += '<li>Sub: ' + sub + '</li>';
+      if (email) html += '<li>Email: ' + email + '</li>';
+      html += '</ul>';
+      if (groups.length) {
+        html += '<p><strong>Groups</strong></p><ul>';
+        groups.forEach(function (g) { html += '<li>' + g + '</li>'; });
+        html += '</ul>';
+      } else {
+        html += '<p><strong>Groups</strong></p><p>None</p>';
+      }
+      el.innerHTML = html;
+    } else {
+      el.innerHTML = '<p>No token in URL (wrong redirect_uri or flow?).</p>';
+    }
+  </script>
+</body>
+</html>
