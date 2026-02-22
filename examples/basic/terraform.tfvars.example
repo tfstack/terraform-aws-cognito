@@ -1,0 +1,4 @@
+# Copy to terraform.tfvars to override demo user email (optional).
+# Temporary password is system-generated and sent to this email by Cognito.
+
+demo_user_username = "demo@example.com"
