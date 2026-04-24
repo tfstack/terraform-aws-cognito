@@ -23,6 +23,20 @@ output "client_ids" {
   value       = { for k, c in aws_cognito_user_pool_client.clients : k => c.id }
 }
 
+output "client_secrets" {
+  description = "Map of app client name to client secret for clients with generate_secret = true (sensitive)"
+  sensitive   = true
+  value = {
+    for k, c in aws_cognito_user_pool_client.clients :
+    k => c.client_secret if try(var.app_clients[k].generate_secret, false)
+  }
+}
+
+output "identity_provider_names" {
+  description = "Names (map keys) of configured identity providers"
+  value       = keys(var.identity_providers)
+}
+
 output "user_pool_client_ids" {
   description = "List of Cognito User Pool Client IDs (for backward compatibility)"
   value       = [for c in aws_cognito_user_pool_client.clients : c.id]
